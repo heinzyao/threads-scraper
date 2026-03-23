@@ -1,0 +1,7 @@
+auth.json
+.env
+output/
+*.xlsx
+__pycache__/
+*.pyc
+.venv/

@@ -1,0 +1,11 @@
+[project]
+name = "threads-scraper"
+version = "0.1.0"
+description = "Threads 關鍵字搜尋爬蟲，以 Playwright 擷取貼文並匯出 Excel"
+readme = "README.md"
+requires-python = ">=3.14"
+dependencies = [
+    "openpyxl>=3.1.5",
+    "playwright>=1.58.0",
+    "python-dotenv>=1.2.2",
+]
