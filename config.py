@@ -1,12 +1,14 @@
 import argparse
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from datetime import date
 from typing import Optional
 
 
 @dataclass
 class Config:
-    keyword: str
+    keywords: list[str]          # 批次搜尋關鍵字（一或多個）
+    keyword: str                 # 當前單次搜尋關鍵字，由 main.py 迴圈注入
+    exclude: list[str]           # 排除關鍵字
     max_posts: int
     sort: str
     start_date: Optional[date]
@@ -19,7 +21,8 @@ class Config:
 
 def parse_args() -> Config:
     parser = argparse.ArgumentParser(description="Threads 關鍵字爬蟲")
-    parser.add_argument("--keyword", required=True, help="搜尋關鍵字")
+    parser.add_argument("--keyword", required=True, nargs="+", help="搜尋關鍵字（可多個，空格分隔）")
+    parser.add_argument("--exclude", nargs="*", default=[], help="排除包含指定詞的貼文（可多個）")
     parser.add_argument("--max-posts", type=int, default=50, help="最大抓取貼文數（預設 50）")
     parser.add_argument("--sort", choices=["recent", "top"], default="recent", help="排序方式（預設 recent）")
     parser.add_argument("--start-date", help="起始日期 YYYY-MM-DD（可選）")
@@ -34,8 +37,11 @@ def parse_args() -> Config:
     start_date = date.fromisoformat(args.start_date) if args.start_date else None
     end_date = date.fromisoformat(args.end_date) if args.end_date else None
 
+    keywords = args.keyword  # nargs='+' 回傳 list
     return Config(
-        keyword=args.keyword,
+        keywords=keywords,
+        keyword=keywords[0],  # 初始值，main.py 迴圈中會覆寫
+        exclude=args.exclude,
         max_posts=args.max_posts,
         sort=args.sort,
         start_date=start_date,

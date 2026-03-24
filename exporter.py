@@ -6,9 +6,10 @@ from openpyxl.styles import Font, Alignment, PatternFill
 from openpyxl.utils import get_column_letter
 
 
-COLUMNS = ["query_date", "timestamp", "account", "link", "tag", "content"]
+COLUMNS = ["query_date", "search_keyword", "timestamp", "account", "link", "tag", "content"]
 HEADERS = {
     "query_date": "查詢日期",
+    "search_keyword": "搜尋關鍵字",
     "timestamp": "發文時間",
     "account": "帳號",
     "link": "貼文連結",
@@ -17,6 +18,7 @@ HEADERS = {
 }
 COL_WIDTHS = {
     "query_date": 14,
+    "search_keyword": 20,
     "timestamp": 24,
     "account": 20,
     "link": 50,
@@ -55,6 +57,7 @@ def export(posts: list[dict], output_path: str) -> Path:
     for row_idx, post in enumerate(posts, start=2):
         row_data = [
             query_date,
+            post.get("search_keyword", ""),
             post.get("timestamp", ""),
             post.get("account", ""),
             post.get("link", ""),

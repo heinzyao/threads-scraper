@@ -19,14 +19,18 @@ uv run playwright install chromium
 ## 使用
 
 ```bash
-# 基本搜尋（預設 50 篇，headless 模式）
+# 單一關鍵字（預設 50 篇，headless 模式）
 uv run python main.py --keyword "AI"
 
-# 指定筆數與排序
-uv run python main.py --keyword "台股" --max-posts 20 --sort recent
+# 多關鍵字批次搜尋（結果合併到同一 Excel）
+uv run python main.py --keyword "AI" "LLM" "台股"
 
-# 日期範圍過濾（client-side 過濾 taken_at timestamp）
-uv run python main.py --keyword "AI" --start-date 2026-01-01 --end-date 2026-03-23
+# 排除包含指定詞的貼文
+uv run python main.py --keyword "AI" --exclude "廣告" "spam"
+
+# 多關鍵字 + 排除 + 日期過濾
+uv run python main.py --keyword "AI" "LLM" --exclude "廣告" \
+  --start-date 2026-01-01 --end-date 2026-03-31 --max-posts 30
 
 # 自訂輸出路徑
 uv run python main.py --keyword "AI" --output output/ai_posts.xlsx
@@ -42,8 +46,9 @@ uv run python main.py --keyword "AI" --login
 
 | 參數 | 預設值 | 說明 |
 |------|--------|------|
-| `--keyword` | 必填 | 搜尋關鍵字 |
-| `--max-posts` | 50 | 最大抓取貼文數 |
+| `--keyword` | 必填 | 搜尋關鍵字（可多個，空格分隔）|
+| `--exclude` | — | 排除包含指定詞的貼文（可多個，case-insensitive）|
+| `--max-posts` | 50 | 最大抓取貼文數（每個關鍵字各自計算）|
 | `--sort` | recent | 排序：`recent`（最新）/ `top`（熱門）|
 | `--start-date` | — | 起始日期 `YYYY-MM-DD`（可選）|
 | `--end-date` | — | 結束日期 `YYYY-MM-DD`（可選）|
@@ -57,6 +62,7 @@ uv run python main.py --keyword "AI" --login
 | 欄位 | 說明 |
 |------|------|
 | 查詢日期 | 執行當天日期 |
+| 搜尋關鍵字 | 觸發此貼文的關鍵字（多關鍵字命中時以 ` / ` 合併）|
 | 發文時間 | 貼文 UTC 時間 |
 | 帳號 | 作者 @handle |
 | 貼文連結 | `threads.com/@user/post/...` |
