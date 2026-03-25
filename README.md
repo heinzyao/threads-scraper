@@ -1,8 +1,12 @@
 # threads-scraper
 
+**繁體中文** | [English](#english)
+
 以關鍵字搜尋 Threads 貼文，自動擷取並匯出為 Excel。
 
 使用 Playwright 攔截頁面 SSR 資料（Relay `__bbox` 格式），無需 API key。
+
+---
 
 ## 需求
 
@@ -77,3 +81,91 @@ uv run python main.py --keyword "AI" --login
 - **日期過濾**：Threads 搜尋 API 不支援伺服器端日期篩選，改用 `taken_at` timestamp 在 client-side 過濾
 
 > **注意**：未登入時每次約可取得 20 篇貼文（Threads 限制）。使用 `--login` 並手動完成登入可取得更多結果。
+
+---
+
+<a name="english"></a>
+
+# threads-scraper — English
+
+[繁體中文](#threads-scraper) | **English**
+
+Search Threads posts by keyword, automatically scrape results, and export to Excel.
+
+Uses Playwright to intercept SSR page data (Relay `__bbox` format). No API key required.
+
+---
+
+## Requirements
+
+- Python 3.14+
+- [uv](https://github.com/astral-sh/uv)
+
+## Installation
+
+```bash
+uv sync
+uv run playwright install chromium
+```
+
+## Usage
+
+```bash
+# Single keyword (default 50 posts, headless mode)
+uv run python main.py --keyword "AI"
+
+# Multiple keywords — results merged into one Excel file
+uv run python main.py --keyword "AI" "LLM" "stocks"
+
+# Exclude posts containing specific words
+uv run python main.py --keyword "AI" --exclude "ad" "spam"
+
+# Multiple keywords + exclusion + date filter
+uv run python main.py --keyword "AI" "LLM" --exclude "ad" \
+  --start-date 2026-01-01 --end-date 2026-03-31 --max-posts 30
+
+# Custom output path
+uv run python main.py --keyword "AI" --output output/ai_posts.xlsx
+
+# Show browser window (useful for debugging)
+uv run python main.py --keyword "AI" --no-headless
+
+# Use a login session (retrieves more posts; first run opens browser for manual login)
+uv run python main.py --keyword "AI" --login
+```
+
+## Arguments
+
+| Argument | Default | Description |
+|----------|---------|-------------|
+| `--keyword` | required | Search keywords (multiple values separated by spaces) |
+| `--exclude` | — | Exclude posts containing these words (multiple values, case-insensitive) |
+| `--max-posts` | 50 | Maximum posts to fetch (counted per keyword) |
+| `--sort` | recent | Sort order: `recent` (newest) / `top` (popular) |
+| `--start-date` | — | Start date filter `YYYY-MM-DD` (optional) |
+| `--end-date` | — | End date filter `YYYY-MM-DD` (optional) |
+| `--output` | `threads_output.xlsx` | Output filename |
+| `--headless` / `--no-headless` | headless | Run browser in headless mode or not |
+| `--delay` | 3.0 | Scroll interval in seconds |
+| `--login` | False | Use login session (session cached in `auth.json`) |
+
+## Output Columns
+
+| Column | Description |
+|--------|-------------|
+| 查詢日期 | Date the script was run |
+| 搜尋關鍵字 | Keyword(s) that matched this post (multiple matches joined with ` / `) |
+| 發文時間 | Post UTC timestamp |
+| 帳號 | Author @handle |
+| 貼文連結 | `threads.com/@user/post/...` |
+| 標籤 | #hashtags found in post body |
+| 內容 | Full post text |
+
+## How It Works
+
+- **Data source**: Parses the Relay/Comet `__bbox` SSR JSON blob embedded in the initial HTML page
+- **Infinite scroll**: Stops after 3 consecutive scrolls with no new posts; logged-in users trigger additional API requests
+- **Deduplication**: Posts are deduplicated by URL
+- **Date filtering**: The Threads search API does not support server-side date filtering; client-side filtering is applied using the `taken_at` timestamp
+
+> **Note**: Without login, each search returns approximately 20 posts (Threads limitation). Use `--login` and complete the manual login to retrieve more results.
