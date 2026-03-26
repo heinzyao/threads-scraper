@@ -56,7 +56,7 @@ uv run python main.py --keyword "AI" --login
 | `--sort` | recent | 排序：`recent`（最新）/ `top`（熱門）|
 | `--start-date` | — | 起始日期 `YYYY-MM-DD`（可選）|
 | `--end-date` | — | 結束日期 `YYYY-MM-DD`（可選）|
-| `--output` | `threads_output.xlsx` | 輸出檔名 |
+| `--output` | `threads_output.xlsx` | 輸出檔名（若檔案已存在則 append） |
 | `--headless` / `--no-headless` | headless | 是否無頭模式 |
 | `--delay` | 3.0 | 滾動間隔秒數 |
 | `--login` | False | 使用登入 session（session 快取於 `auth.json`）|
@@ -77,7 +77,7 @@ uv run python main.py --keyword "AI" --login
 
 - **資料來源**：解析初始 HTML 頁面中 Relay/Comet `__bbox` SSR JSON blob
 - **無限滾動**：連續 3 次滾動無新貼文時停止；登入用戶可觸發更多 API 請求
-- **去重**：以貼文 URL 為 key 去除重複
+- **去重**：以貼文 URL 為 key 去除重複；輸出檔案已存在時自動 append 並跳過重複貼文
 - **日期過濾**：Threads 搜尋 API 不支援伺服器端日期篩選，改用 `taken_at` timestamp 在 client-side 過濾
 
 > **注意**：未登入時每次約可取得 20 篇貼文（Threads 限制）。使用 `--login` 並手動完成登入可取得更多結果。
@@ -144,7 +144,7 @@ uv run python main.py --keyword "AI" --login
 | `--sort` | recent | Sort order: `recent` (newest) / `top` (popular) |
 | `--start-date` | — | Start date filter `YYYY-MM-DD` (optional) |
 | `--end-date` | — | End date filter `YYYY-MM-DD` (optional) |
-| `--output` | `threads_output.xlsx` | Output filename |
+| `--output` | `threads_output.xlsx` | Output filename (appends if file already exists) |
 | `--headless` / `--no-headless` | headless | Run browser in headless mode or not |
 | `--delay` | 3.0 | Scroll interval in seconds |
 | `--login` | False | Use login session (session cached in `auth.json`) |
@@ -165,7 +165,7 @@ uv run python main.py --keyword "AI" --login
 
 - **Data source**: Parses the Relay/Comet `__bbox` SSR JSON blob embedded in the initial HTML page
 - **Infinite scroll**: Stops after 3 consecutive scrolls with no new posts; logged-in users trigger additional API requests
-- **Deduplication**: Posts are deduplicated by URL
+- **Deduplication**: Posts are deduplicated by URL; when the output file already exists, new posts are appended and duplicates are skipped
 - **Date filtering**: The Threads search API does not support server-side date filtering; client-side filtering is applied using the `taken_at` timestamp
 
 > **Note**: Without login, each search returns approximately 20 posts (Threads limitation). Use `--login` and complete the manual login to retrieve more results.
