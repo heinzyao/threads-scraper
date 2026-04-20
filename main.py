@@ -16,6 +16,15 @@ def _apply_exclude(posts: list[dict], exclude: list[str]) -> list[dict]:
     ]
 
 
+def _apply_include_exact(posts: list[dict], keyword: str) -> list[dict]:
+    """確保貼文內容精確包含指定的搜尋關鍵字（case-insensitive）。"""
+    lower_kw = keyword.lower()
+    return [
+        p for p in posts
+        if lower_kw in p.get("content", "").lower()
+    ]
+
+
 def main():
     config = parse_args()
 
@@ -39,6 +48,12 @@ def main():
         print(f"--- 搜尋關鍵字：{kw} ---")
         single_config = dataclasses.replace(config, keyword=kw)
         posts = scrape(single_config)
+
+        # 針對搜尋關鍵字進行精確內文比對
+        before_exact = len(posts)
+        posts = _apply_include_exact(posts, kw)
+        if before_exact != len(posts):
+            print(f"  精確包含過濾：{before_exact} → {len(posts)} 篇（移除未完整包含 '{kw}' 的 {before_exact - len(posts)} 篇）")
 
         for p in posts:
             url = p["link"]

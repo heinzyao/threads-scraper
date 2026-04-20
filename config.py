@@ -34,8 +34,16 @@ def parse_args() -> Config:
 
     args = parser.parse_args()
 
-    start_date = date.fromisoformat(args.start_date) if args.start_date else None
-    end_date = date.fromisoformat(args.end_date) if args.end_date else None
+    # 如果沒有提供 start_date 和 end_date，預設搜尋近七天
+    if not args.start_date and not args.end_date:
+        from datetime import timedelta
+        default_start_date = date.today() - timedelta(days=7)
+        start_date = default_start_date
+        end_date = None
+        print(f"（未指定日期，預設搜尋近七天：{start_date} 起）")
+    else:
+        start_date = date.fromisoformat(args.start_date) if args.start_date else None
+        end_date = date.fromisoformat(args.end_date) if args.end_date else None
 
     keywords = args.keyword  # nargs='+' 回傳 list
     return Config(

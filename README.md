@@ -54,7 +54,7 @@ uv run python main.py --keyword "AI" --login
 | `--exclude` | — | 排除包含指定詞的貼文（可多個，case-insensitive）|
 | `--max-posts` | 50 | 最大抓取貼文數（每個關鍵字各自計算）|
 | `--sort` | recent | 排序：`recent`（最新）/ `top`（熱門）|
-| `--start-date` | — | 起始日期 `YYYY-MM-DD`（可選）|
+| `--start-date` | 近 7 天 | 起始日期 `YYYY-MM-DD`（未指定任何日期時預設搜尋近 7 天）|
 | `--end-date` | — | 結束日期 `YYYY-MM-DD`（可選）|
 | `--output` | `threads_output.xlsx` | 輸出檔名（若檔案已存在則 append） |
 | `--headless` / `--no-headless` | headless | 是否無頭模式 |
@@ -142,7 +142,7 @@ uv run python main.py --keyword "AI" --login
 | `--exclude` | — | Exclude posts containing these words (multiple values, case-insensitive) |
 | `--max-posts` | 50 | Maximum posts to fetch (counted per keyword) |
 | `--sort` | recent | Sort order: `recent` (newest) / `top` (popular) |
-| `--start-date` | — | Start date filter `YYYY-MM-DD` (optional) |
+| `--start-date` | 7 days ago | Start date filter `YYYY-MM-DD` (defaults to last 7 days if no dates specified) |
 | `--end-date` | — | End date filter `YYYY-MM-DD` (optional) |
 | `--output` | `threads_output.xlsx` | Output filename (appends if file already exists) |
 | `--headless` / `--no-headless` | headless | Run browser in headless mode or not |
@@ -164,6 +164,7 @@ uv run python main.py --keyword "AI" --login
 ## How It Works
 
 - **Data source**: Parses the Relay/Comet `__bbox` SSR JSON blob embedded in the initial HTML page
+- **Exact matching**: Performs strict, case-insensitive string matching on the post content locally to ensure the keyword is genuinely present, filtering out irrelevant algorithmic recommendations
 - **Infinite scroll**: Stops after 3 consecutive scrolls with no new posts; logged-in users trigger additional API requests
 - **Deduplication**: Posts are deduplicated by URL; when the output file already exists, new posts are appended and duplicates are skipped
 - **Date filtering**: The Threads search API does not support server-side date filtering; client-side filtering is applied using the `taken_at` timestamp
