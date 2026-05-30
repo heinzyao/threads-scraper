@@ -3,6 +3,7 @@ import re
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Optional
+from urllib.parse import quote_plus
 
 from playwright.sync_api import sync_playwright, Page, Response
 
@@ -219,7 +220,8 @@ def scrape(config: Config) -> list[dict]:
 
         serp_type = "recent" if config.sort == "recent" else "default"
         # 使用 threads.com（threads.net 已 301 重導）
-        url = f"https://www.threads.com/search?q={config.keyword}&serp_type={serp_type}"
+        query = quote_plus(config.keyword)
+        url = f"https://www.threads.com/search?q={query}&serp_type={serp_type}"
         print(f"前往搜尋頁：{url}")
         page.goto(url, wait_until="domcontentloaded", timeout=30000)
         page.wait_for_timeout(3000)
