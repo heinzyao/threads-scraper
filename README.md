@@ -6,6 +6,16 @@
 
 使用 Playwright 攔截頁面 SSR 資料（Relay `__bbox` 格式），無需 API key。
 
+> **⚠️ 已歸檔（Archived, 2026-06）**：本專案不再維護。
+> 它依賴 Threads 未公開的內部資料結構，且自動化抓取可能違反
+> [Meta 服務條款](https://help.instagram.com/581066165581870)。
+> 僅供個人技術研究參考，請勿用於量產或商業用途。
+>
+> **⚠️ Archived (2026-06)**: No longer maintained. This tool relies on
+> Threads' undocumented internal data structures, and automated scraping
+> may violate Meta's Terms of Service. Kept for personal research
+> reference only — do not use it at scale or commercially.
+
 ---
 
 ## 需求
