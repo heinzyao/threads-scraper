@@ -189,6 +189,9 @@ def scrape(config: Config) -> list[dict]:
                 add_posts(posts)
                 print(f"  [JSON] 從 {url[:60]} 解析到 {len(posts)} 篇貼文")
 
+    # chromium 用 Playwright 內建瀏覽器（無 channel）；msedge/chrome 用系統安裝版本
+    channel_kwargs = {} if config.browser == "chromium" else {"channel": config.browser}
+
     with sync_playwright() as pw:
         context_kwargs = {
             "viewport": {"width": 1280, "height": 900},
@@ -204,7 +207,7 @@ def scrape(config: Config) -> list[dict]:
             context_kwargs["storage_state"] = str(AUTH_JSON)
 
         if config.login and not AUTH_JSON.exists():
-            browser = pw.chromium.launch(headless=False)
+            browser = pw.chromium.launch(headless=False, **channel_kwargs)
             context = browser.new_context(**context_kwargs)
             page = context.new_page()
             _do_login(page)
@@ -213,7 +216,7 @@ def scrape(config: Config) -> list[dict]:
             browser.close()
             context_kwargs["storage_state"] = str(AUTH_JSON)
 
-        browser = pw.chromium.launch(headless=config.headless)
+        browser = pw.chromium.launch(headless=config.headless, **channel_kwargs)
         context = browser.new_context(**context_kwargs)
         page = context.new_page()
         page.on("response", handle_response)

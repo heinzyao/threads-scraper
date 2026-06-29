@@ -1,8 +1,34 @@
 import dataclasses
+import sys
+from datetime import datetime
+from pathlib import Path
 
 from config import parse_args
 from scraper import scrape
 from exporter import export
+
+
+class _Tee:
+    """同時把輸出寫到終端機與 log 檔。ponytail: stdlib 無 tee，這 ~10 行就夠。"""
+    def __init__(self, *streams):
+        self.streams = streams
+
+    def write(self, data):
+        for s in self.streams:
+            s.write(data)
+
+    def flush(self):
+        for s in self.streams:
+            s.flush()
+
+
+def _setup_logging() -> Path:
+    log_dir = Path(__file__).parent / "logs"
+    log_dir.mkdir(exist_ok=True)
+    log_path = log_dir / f"scrape_{datetime.now():%Y%m%d_%H%M%S}.log"
+    log_file = open(log_path, "a", encoding="utf-8")
+    sys.stdout = _Tee(sys.stdout, log_file)
+    return log_path
 
 
 def _apply_exclude(posts: list[dict], exclude: list[str]) -> list[dict]:
@@ -27,8 +53,11 @@ def _apply_include_exact(posts: list[dict], keyword: str) -> list[dict]:
 
 def main():
     config = parse_args()
+    log_path = _setup_logging()
 
     print("=== Threads 爬蟲啟動 ===")
+    print(f"Log 檔：{log_path.resolve()}")
+    print(f"瀏覽器：{config.browser}")
     print(f"關鍵字：{' / '.join(config.keywords)}")
     print(f"最大貼文數（每關鍵字）：{config.max_posts}")
     print(f"排序：{config.sort}")

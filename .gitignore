@@ -1,6 +1,7 @@
 auth.json
 .env
 output/
+logs/
 *.xlsx
 __pycache__/
 *.pyc

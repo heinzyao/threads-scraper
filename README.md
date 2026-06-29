@@ -22,13 +22,17 @@
 
 - Python 3.14+
 - [uv](https://github.com/astral-sh/uv)
+- [Microsoft Edge](https://www.microsoft.com/edge)（瀏覽器以 `channel="msedge"` 啟動，會使用系統安裝的 Edge）
 
 ## 安裝
 
 ```bash
 uv sync
-uv run playwright install chromium
+# 安裝 Edge（若尚未安裝）
+brew install --cask microsoft-edge
 ```
+
+> 本工具透過 Playwright 的 `channel="msedge"` 直接驅動系統安裝的 Microsoft Edge，因此無需 `playwright install chromium`，但**必須先安裝 Edge**。
 
 ## 使用
 
@@ -54,7 +58,12 @@ uv run python main.py --keyword "AI" --no-headless
 
 # 使用登入 session（可取得更多貼文，首次會開啟瀏覽器要求手動登入）
 uv run python main.py --keyword "AI" --login
+
+# 指定瀏覽器（msedge 預設 / chrome / chromium）
+uv run python main.py --keyword "AI" --browser chrome
 ```
+
+> 每次執行會自動把所有輸出寫到 `logs/scrape_<時間戳>.log`（終端機同時顯示）。
 
 ## 參數說明
 
@@ -70,6 +79,7 @@ uv run python main.py --keyword "AI" --login
 | `--headless` / `--no-headless` | headless | 是否無頭模式 |
 | `--delay` | 3.0 | 滾動間隔秒數 |
 | `--login` | False | 使用登入 session（session 快取於 `auth.json`）|
+| `--browser` | msedge | 啟動瀏覽器：`msedge` / `chrome` / `chromium`（前兩者用系統安裝版本，`chromium` 用 Playwright 內建）|
 
 ## 輸出欄位
 
@@ -110,13 +120,17 @@ Uses Playwright to intercept SSR page data (Relay `__bbox` format). No API key r
 
 - Python 3.14+
 - [uv](https://github.com/astral-sh/uv)
+- [Microsoft Edge](https://www.microsoft.com/edge) (the browser launches with `channel="msedge"`, using the system-installed Edge)
 
 ## Installation
 
 ```bash
 uv sync
-uv run playwright install chromium
+# Install Edge (if not already installed)
+brew install --cask microsoft-edge
 ```
+
+> This tool drives the system-installed Microsoft Edge directly via Playwright's `channel="msedge"`, so `playwright install chromium` is not needed — but **Edge must be installed first**.
 
 ## Usage
 
@@ -142,7 +156,12 @@ uv run python main.py --keyword "AI" --no-headless
 
 # Use a login session (retrieves more posts; first run opens browser for manual login)
 uv run python main.py --keyword "AI" --login
+
+# Choose the browser (msedge default / chrome / chromium)
+uv run python main.py --keyword "AI" --browser chrome
 ```
+
+> Every run automatically writes all output to `logs/scrape_<timestamp>.log` (also shown in the terminal).
 
 ## Arguments
 
@@ -158,6 +177,7 @@ uv run python main.py --keyword "AI" --login
 | `--headless` / `--no-headless` | headless | Run browser in headless mode or not |
 | `--delay` | 3.0 | Scroll interval in seconds |
 | `--login` | False | Use login session (session cached in `auth.json`) |
+| `--browser` | msedge | Browser to launch: `msedge` / `chrome` / `chromium` (first two use the system-installed browser, `chromium` uses Playwright's bundled one) |
 
 ## Output Columns
 

@@ -17,6 +17,7 @@ class Config:
     headless: bool
     delay: float
     login: bool
+    browser: str                 # 啟動瀏覽器：msedge / chrome / chromium
 
 
 def parse_args() -> Config:
@@ -31,6 +32,7 @@ def parse_args() -> Config:
     parser.add_argument("--headless", action=argparse.BooleanOptionalAction, default=True, help="無頭模式（預設 True）")
     parser.add_argument("--delay", type=float, default=3.0, help="滾動間隔秒數（預設 3）")
     parser.add_argument("--login", action="store_true", default=False, help="是否使用登入 session")
+    parser.add_argument("--browser", choices=["msedge", "chrome", "chromium"], default="msedge", help="啟動瀏覽器（預設 msedge）")
 
     args = parser.parse_args()
 
@@ -58,4 +60,5 @@ def parse_args() -> Config:
         headless=args.headless,
         delay=args.delay,
         login=args.login,
+        browser=args.browser,
     )
