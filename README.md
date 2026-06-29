@@ -63,7 +63,7 @@ uv run python main.py --keyword "AI" --login
 uv run python main.py --keyword "AI" --browser chrome
 ```
 
-> 每次執行會自動把所有輸出寫到 `logs/scrape_<時間戳>.log`（終端機同時顯示）。
+> 每次執行會自動把所有輸出寫到 `logs/threads_log_<時間戳>.log`（終端機同時顯示）。可用 `--log-dir` 指定其他目錄。
 
 ## 參數說明
 
@@ -80,6 +80,7 @@ uv run python main.py --keyword "AI" --browser chrome
 | `--delay` | 3.0 | 滾動間隔秒數 |
 | `--login` | False | 使用登入 session（session 快取於 `auth.json`）|
 | `--browser` | msedge | 啟動瀏覽器：`msedge` / `chrome` / `chromium`（前兩者用系統安裝版本，`chromium` 用 Playwright 內建）|
+| `--log-dir` | `logs` | Log 檔輸出目錄（不存在會自動建立）|
 
 ## 輸出欄位
 
@@ -161,7 +162,7 @@ uv run python main.py --keyword "AI" --login
 uv run python main.py --keyword "AI" --browser chrome
 ```
 
-> Every run automatically writes all output to `logs/scrape_<timestamp>.log` (also shown in the terminal).
+> Every run automatically writes all output to `logs/threads_log_<timestamp>.log` (also shown in the terminal). Use `--log-dir` to choose another directory.
 
 ## Arguments
 
@@ -178,6 +179,7 @@ uv run python main.py --keyword "AI" --browser chrome
 | `--delay` | 3.0 | Scroll interval in seconds |
 | `--login` | False | Use login session (session cached in `auth.json`) |
 | `--browser` | msedge | Browser to launch: `msedge` / `chrome` / `chromium` (first two use the system-installed browser, `chromium` uses Playwright's bundled one) |
+| `--log-dir` | `logs` | Directory for log files (created if missing) |
 
 ## Output Columns
 

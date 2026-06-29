@@ -18,6 +18,7 @@ class Config:
     delay: float
     login: bool
     browser: str                 # 啟動瀏覽器：msedge / chrome / chromium
+    log_dir: str                 # Log 檔輸出目錄
 
 
 def parse_args() -> Config:
@@ -33,6 +34,7 @@ def parse_args() -> Config:
     parser.add_argument("--delay", type=float, default=3.0, help="滾動間隔秒數（預設 3）")
     parser.add_argument("--login", action="store_true", default=False, help="是否使用登入 session")
     parser.add_argument("--browser", choices=["msedge", "chrome", "chromium"], default="msedge", help="啟動瀏覽器（預設 msedge）")
+    parser.add_argument("--log-dir", default="logs", help="Log 檔輸出目錄（預設 logs）")
 
     args = parser.parse_args()
 
@@ -61,4 +63,5 @@ def parse_args() -> Config:
         delay=args.delay,
         login=args.login,
         browser=args.browser,
+        log_dir=args.log_dir,
     )

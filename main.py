@@ -22,10 +22,10 @@ class _Tee:
             s.flush()
 
 
-def _setup_logging() -> Path:
-    log_dir = Path(__file__).parent / "logs"
-    log_dir.mkdir(exist_ok=True)
-    log_path = log_dir / f"scrape_{datetime.now():%Y%m%d_%H%M%S}.log"
+def _setup_logging(log_dir: str) -> Path:
+    out_dir = Path(log_dir)
+    out_dir.mkdir(parents=True, exist_ok=True)
+    log_path = out_dir / f"threads_log_{datetime.now():%Y%m%d_%H%M%S}.log"
     log_file = open(log_path, "a", encoding="utf-8")
     sys.stdout = _Tee(sys.stdout, log_file)
     return log_path
@@ -53,7 +53,7 @@ def _apply_include_exact(posts: list[dict], keyword: str) -> list[dict]:
 
 def main():
     config = parse_args()
-    log_path = _setup_logging()
+    log_path = _setup_logging(config.log_dir)
 
     print("=== Threads 爬蟲啟動 ===")
     print(f"Log 檔：{log_path.resolve()}")
